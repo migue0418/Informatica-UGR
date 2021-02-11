@@ -1,0 +1,185 @@
+\hypertarget{intervalo_8h}{}\section{Referencia del Archivo include/intervalo.h}
+\label{intervalo_8h}\index{include/intervalo.\+h@{include/intervalo.\+h}}
+Gráfico de los archivos que directa o indirectamente incluyen a este archivo\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=260pt]{intervalo_8h__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Clases}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classIntervalo}{Intervalo}
+\end{DoxyCompactItemize}
+\subsection*{Funciones}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{intervalo_8h_a4d876dab3159c523343e8f603af65cbb}\label{intervalo_8h_a4d876dab3159c523343e8f603af65cbb}} 
+bool {\bfseries valido} (double, double, bool, bool)
+\item 
+\hyperlink{classIntervalo}{Intervalo} \hyperlink{intervalo_8h_ab691781bae666d71c1430e097a742ddb}{interseccion} (\hyperlink{classIntervalo}{Intervalo} i1, \hyperlink{classIntervalo}{Intervalo} i2)
+\begin{DoxyCompactList}\small\item\em realiza la interseccion de dos intervalos, puede resultar un intervalo vacío en caso de que no tengan cotas comunes, en caso contrario se revisan las cotas. \end{DoxyCompactList}\item 
+void \hyperlink{intervalo_8h_ae93092259c95b463d176a768b9884802}{escribir} (const \hyperlink{classIntervalo}{Intervalo} \&i)
+\begin{DoxyCompactList}\small\item\em Imprime los valores de un intervalo de forma visual según lo indicado en el guión. \end{DoxyCompactList}\item 
+void \hyperlink{intervalo_8h_a81ca561257a3eea794e139a64fdd6593}{leer} (\hyperlink{classIntervalo}{Intervalo} \&i)
+\begin{DoxyCompactList}\small\item\em Lee los valores del intervalo según el formato indicado en el guión. \end{DoxyCompactList}\item 
+void \hyperlink{intervalo_8h_a4414e0616dd83662f4b657056c06c5fe}{comprobar\+Vacio} (\hyperlink{classIntervalo}{Intervalo} i)
+\begin{DoxyCompactList}\small\item\em Muestra un mensaje en pantalla indicando si el intervalo es vacío o no. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Descripción detallada}
+\begin{DoxyAuthor}{Autor}
+decsai.\+ugr.\+es 
+\end{DoxyAuthor}
+
+
+\subsection{Documentación de las funciones}
+\mbox{\Hypertarget{intervalo_8h_a4414e0616dd83662f4b657056c06c5fe}\label{intervalo_8h_a4414e0616dd83662f4b657056c06c5fe}} 
+\index{intervalo.\+h@{intervalo.\+h}!comprobar\+Vacio@{comprobar\+Vacio}}
+\index{comprobar\+Vacio@{comprobar\+Vacio}!intervalo.\+h@{intervalo.\+h}}
+\subsubsection{\texorpdfstring{comprobar\+Vacio()}{comprobarVacio()}}
+{\footnotesize\ttfamily void comprobar\+Vacio (\begin{DoxyParamCaption}\item[{\hyperlink{classIntervalo}{Intervalo}}]{i }\end{DoxyParamCaption})}
+
+
+
+Muestra un mensaje en pantalla indicando si el intervalo es vacío o no. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em i} & El intervalo \\
+\hline
+\end{DoxyParams}
+
+
+Definición en la línea 109 del archivo intervalo.\+cpp.
+
+
+\begin{DoxyCode}
+109                                   \{
+110      \hyperlink{intervalo_8cpp_a4ffcdcbcf710a7461d8263cd14a32438}{escribir}(obj);
+111     \textcolor{keywordflow}{if} (obj.esVacio())
+112         cout << \textcolor{stringliteral}{"Vacio"};
+113     \textcolor{keywordflow}{else}  cout << \textcolor{stringliteral}{"NO Vacio"};
+114     cout << endl;
+115 \}
+\end{DoxyCode}
+Gráfico de llamadas para esta función\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{intervalo_8h_a4414e0616dd83662f4b657056c06c5fe_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{intervalo_8h_ae93092259c95b463d176a768b9884802}\label{intervalo_8h_ae93092259c95b463d176a768b9884802}} 
+\index{intervalo.\+h@{intervalo.\+h}!escribir@{escribir}}
+\index{escribir@{escribir}!intervalo.\+h@{intervalo.\+h}}
+\subsubsection{\texorpdfstring{escribir()}{escribir()}}
+{\footnotesize\ttfamily void escribir (\begin{DoxyParamCaption}\item[{const \hyperlink{classIntervalo}{Intervalo} \&}]{i }\end{DoxyParamCaption})}
+
+
+
+Imprime los valores de un intervalo de forma visual según lo indicado en el guión. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em El} & intervalo \\
+\hline
+\end{DoxyParams}
+
+
+Definición en la línea 77 del archivo intervalo.\+cpp.
+
+
+\begin{DoxyCode}
+77                                      \{
+78     \textcolor{keywordflow}{if} (obj.esVacio())
+79         cout << \textcolor{stringliteral}{"0 !!"};
+80     \textcolor{keywordflow}{else} \{
+81         \textcolor{keywordflow}{if} (obj.dentroCotaInf())
+82          cout << \textcolor{charliteral}{'['};
+83         \textcolor{keywordflow}{else} cout << \textcolor{charliteral}{'('};
+84         cout << obj.getCotaInf() << \textcolor{stringliteral}{","} << obj.getCotaSup();
+85         \textcolor{keywordflow}{if} (obj.dentroCotaSup())
+86             cout << \textcolor{charliteral}{']'};
+87         \textcolor{keywordflow}{else} cout << \textcolor{charliteral}{')'};
+88     \}
+89 \}
+\end{DoxyCode}
+Gráfico de llamadas para esta función\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=289pt]{intervalo_8h_ae93092259c95b463d176a768b9884802_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{intervalo_8h_ab691781bae666d71c1430e097a742ddb}\label{intervalo_8h_ab691781bae666d71c1430e097a742ddb}} 
+\index{intervalo.\+h@{intervalo.\+h}!interseccion@{interseccion}}
+\index{interseccion@{interseccion}!intervalo.\+h@{intervalo.\+h}}
+\subsubsection{\texorpdfstring{interseccion()}{interseccion()}}
+{\footnotesize\ttfamily \hyperlink{classIntervalo}{Intervalo} interseccion (\begin{DoxyParamCaption}\item[{\hyperlink{classIntervalo}{Intervalo}}]{i1,  }\item[{\hyperlink{classIntervalo}{Intervalo}}]{i2 }\end{DoxyParamCaption})}
+
+
+
+realiza la interseccion de dos intervalos, puede resultar un intervalo vacío en caso de que no tengan cotas comunes, en caso contrario se revisan las cotas. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em i1} & primer intervalo de entrada \\
+\hline
+{\em i2} & segundo intervalo de entrada \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+devuelve el intervalo resultante de realizar la interseccion entre los dos intervalos de entrada 
+\end{DoxyReturn}
+\mbox{\Hypertarget{intervalo_8h_a81ca561257a3eea794e139a64fdd6593}\label{intervalo_8h_a81ca561257a3eea794e139a64fdd6593}} 
+\index{intervalo.\+h@{intervalo.\+h}!leer@{leer}}
+\index{leer@{leer}!intervalo.\+h@{intervalo.\+h}}
+\subsubsection{\texorpdfstring{leer()}{leer()}}
+{\footnotesize\ttfamily void leer (\begin{DoxyParamCaption}\item[{\hyperlink{classIntervalo}{Intervalo} \&}]{i }\end{DoxyParamCaption})}
+
+
+
+Lee los valores del intervalo según el formato indicado en el guión. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em i} & El intervalo \\
+\hline
+\end{DoxyParams}
+
+
+Definición en la línea 91 del archivo intervalo.\+cpp.
+
+
+\begin{DoxyCode}
+91                           \{
+92     \textcolor{comment}{// Formato de lectura del intervalo: [|( x,y )|]}
+93     \textcolor{keywordtype}{bool} cerradoInf = \textcolor{keyword}{true};
+94     \textcolor{keywordtype}{bool} cerradoSup = \textcolor{keyword}{true};
+95     \textcolor{keywordtype}{double} cotaInf, cotaSup;
+96     \textcolor{keywordtype}{char} car;
+97     cin >> car;
+98     \textcolor{keywordflow}{if} (car == \textcolor{charliteral}{'('})
+99         cerradoInf = \textcolor{keyword}{false};
+100     cin >> cotaInf;
+101     cin >> car;
+102     cin >> cotaSup;
+103     cin >> car;
+104     \textcolor{keywordflow}{if} (car == \textcolor{charliteral}{')'})
+105         cerradoSup = \textcolor{keyword}{false};
+106     obj.setIntervalo(cotaInf, cotaSup, cerradoInf, cerradoSup);
+107 \}
+\end{DoxyCode}
+Gráfico de llamadas para esta función\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=259pt]{intervalo_8h_a81ca561257a3eea794e139a64fdd6593_cgraph}
+\end{center}
+\end{figure}

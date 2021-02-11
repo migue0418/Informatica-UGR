@@ -1,0 +1,7 @@
+<map id="escribir" name="escribir">
+<area shape="rect" id="node2" href="$classIntervalo.html#adc77e18147f9f9f85476a0d44257bb02" title="Consulta si el intervalo almacenado es vacío o no. " alt="" coords="137,5,264,32"/>
+<area shape="rect" id="node3" href="$classIntervalo.html#aac8f7b98dd0d702086ea897f5c9ad932" title="Consulta si el intervalo es cerrado en su cota inferior. " alt="" coords="121,56,280,83"/>
+<area shape="rect" id="node4" href="$classIntervalo.html#aafa3f6ec78c6bd44b568e343fb22fc90" title="Devuelve la cota inferior del intervalo. " alt="" coords="130,107,271,133"/>
+<area shape="rect" id="node5" href="$classIntervalo.html#a2dd767a860e4e85ec3d5a44e78884b76" title="Devuelve la cota superior del intervalo. " alt="" coords="126,157,275,184"/>
+<area shape="rect" id="node6" href="$classIntervalo.html#aed0964a68d4b727bd104f5128ee7a7ef" title="Consulta si el intervalo es cerrado en su cota superior. " alt="" coords="117,208,284,235"/>
+</map>
