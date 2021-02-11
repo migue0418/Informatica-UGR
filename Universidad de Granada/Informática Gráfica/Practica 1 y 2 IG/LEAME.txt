@@ -1,0 +1,39 @@
+Practica 2 Informática Gráfica
+Miguel Ángel Benítez Alguacil
+
+Teclas:
+	1 Draw Puntos
+	2 Draw Aristas
+	3 Draw Caras
+	4 Draw Ajedrez
+	
+	C Cubo
+	P Pirámide
+	N Cono
+	L Cilindro
+	E Esfera
+	O Objeto Ply
+	M Mi objeto ply por revolución
+	
+	X Rotación en eje X (solo esfera, cono y cilindro)
+	Y Rotación en eje Y (solo esfera, cono y cilindro)
+	Z Rotación en eje Z (solo esfera, cono y cilindro)
+	
+	7 Color rojo
+	8 Color azul
+	9 Color verde
+	0 Color blanco/negro
+	
+************************************
+OBJETO PLY POR REVOLUCIÓN
+Para que lea el archivo hay que escribir el nombre del archivo en practica_objetos_B2.cc en la 
+línea 15.
+************************************
+EXTRA Práctica 1
+Para la práctica 1 (también en la práctica 2) he implementado la opción de que se pudiese 
+cambiar los colores a las figuras, usando rojo (opción por defecto), azul y verde con 
+sus respectivos complementarios, y otra en blanco y negro (Usar teclas 7,8,9,0).
+************************************
+EXTRA Práctica 2
+He añadido la funcionalidad de que el cilindro, el cono y la esfera puedan rotar en los ejes x,y,z 
+El eje por defecto es el eje y.

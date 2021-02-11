@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>MiDecsai</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Kaushan+Script">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/fonts/ionicons.min.css">
+    <link rel="stylesheet" href="assets/css/Contact-Form-Clean.css">
+    <link rel="stylesheet" href="assets/css/Footer-Dark.css">
+    <link rel="stylesheet" href="assets/css/Login-Form-Dark.css">
+</head>
+
+<body>
+    <main>
+        <form action="insert.php" method="post" id="dar_de_alta" style="width: 600px;min-width: 538px;margin: auto;height: 300pxpx;background-color: #f2f2f2;padding: 50px;padding-bottom: 38px;padding-top: 44px;margin-top: 40px;">
+            <h1 class="d-xl-flex justify-content-xl-center" style="margin-bottom: 22px;">Dar de Alta Usuario</h1>
+            <div class="form-group" style="width: 90%;margin: auto;">
+                <input class="form-control" type="text" name="dni" placeholder="DNI" style="margin-top: 0px;margin-bottom: 8px;">
+            </div>
+            <div class="form-group" style="width: 90%;margin: auto;">
+                <input class="form-control" type="email" name="email" placeholder="Email" style="margin-bottom: 8px;">
+            </div>
+            <div class="form-group d-xl-flex justify-content-xl-center" style="width: 40%;margin: auto;">
+                <button class="btn" type="submit" name="dar_de_alta" value="enviar" style="background-color: #282828;font-weight: normal;color: #ffffff;margin-top: 9px;padding-bottom: 6px;">Dar de Alta</button>
+            </div>
+        </form>
+    </main>
+    <main>
+        <form action="insert.php" method="post" id="modificar_plazo" style="width: 600px;min-width: 538px;margin: auto;height: 300pxpx;background-color: #f2f2f2;padding: 50px;padding-bottom: 38px;padding-top: 44px;margin-top: 40px;">
+            <h1 class="d-xl-flex justify-content-xl-center" style="margin-bottom: 22px;">Modificar Plazo</h1>
+            <div class="form-group" style="width: 90%;margin: auto;margin-bottom: 8px;margin-top: 8px;"><input class="form-control" type="text" name="nombre_plazo" placeholder="Nombre del plazo" style="margin-bottom: 8px;"></div>
+            <div class="form-group d-xl-flex" style="width: 90%;margin: auto;height: 80px;margin-bottom: 8px;margin-top: 8px;"><textarea class="form-control" placeholder="Descripción"></textarea></div>
+            <div class="container text-center d-xl-flex justify-content-sm-end justify-content-md-around align-items-xl-center" style="height: 100%;width: 90%;margin-top: 16px;margin-bottom: 8px;">
+                <div class="form-group"><label>Fecha Inicio</label><input class="form-control" type="date"></div>
+                <div class="form-group"><label>Fecha Fin</label><input class="form-control" type="date"></div>
+            </div>
+            <div class="form-group d-xl-flex justify-content-xl-center" style="width: 40%;margin: auto;"><button class="btn" type="button" style="background-color: #282828;font-weight: normal;color: #ffffff;margin-top: 9px;padding-bottom: 6px;">Modificar Plazo</button></div>
+        </form>
+    </main>
+    <main>
+        <form id="add_plazo" style="width: 600px;min-width: 538px;margin: auto;height: 300pxpx;background-color: #f2f2f2;padding: 50px;padding-bottom: 38px;padding-top: 44px;margin-top: 40px;">
+            <h1 class="d-xl-flex justify-content-xl-center" style="margin-bottom: 22px;">Añadir Plazo</h1>
+            <div class="form-group" style="width: 90%;margin: auto;margin-bottom: 8px;margin-top: 8px;"><input class="form-control" type="text" name="nombre_plazo" placeholder="Nombre del plazo" style="margin-bottom: 8px;"></div>
+            <div class="form-group d-xl-flex" style="width: 90%;margin: auto;height: 80px;margin-bottom: 8px;margin-top: 8px;"><textarea class="form-control" name="descripcion" placeholder="Descripción"></textarea></div>
+            <div class="form-group d-xl-flex justify-content-xl-center" style="width: 40%;margin: auto;"><button class="btn" type="button" style="background-color: #282828;font-weight: normal;color: #ffffff;margin-top: 9px;padding-bottom: 6px;">Añadir Plazo</button></div>
+        </form>
+    </main>
+    <main>
+        <form id="modificar_datos" style="width: 800px;min-width: 600px;margin: auto;background-color: #f2f2f2;padding: 50px;padding-bottom: 38px;padding-top: 44px;margin-top: 40px;">
+            <div class="container d-flex">
+                <h1 class="d-xl-flex justify-content-xl-center" style="margin-bottom: 22px;width: 80%;font-size: 35px;margin-left: 15px;margin-top: 21px;">Modificar Datos Personales</h1><img src="assets/img/Contacto.png" width="100px" height="100px"></div>
+            <div class="container text-left d-xl-flex justify-content-sm-end justify-content-md-around align-items-xl-center" style="height: 100%;width: 100%;margin-top: 16px;margin-bottom: 8px;padding-left: 0px;">
+                <div class="form-group" style="margin: auto;margin-bottom: 0px;width: 40%;"><label>DNI</label><input class="form-control" type="text"></div>
+                <div class="form-group" style="margin: auto;margin-bottom: 0px;width: 40%;"><label>Email</label><input class="form-control" type="email"></div>
+            </div>
+            <div class="container d-xl-flex justify-content-sm-end justify-content-md-around align-items-xl-center" style="height: 100%;width: 100%;margin-top: 16px;margin-bottom: 8px;padding-left: 0px;">
+                <div class="form-group" style="margin: auto;margin-bottom: 0px;width: 40%;"><label>Nombre</label><input class="form-control" type="text"></div>
+                <div class="form-group" style="margin: auto;margin-bottom: 0px;width: 40%;"><label>Apellidos</label><input class="form-control" type="text"></div>
+            </div>
+            <div class="container d-xl-flex justify-content-sm-end justify-content-md-around align-items-xl-center" style="height: 100%;width: 100%;margin-top: 16px;margin-bottom: 8px;padding-left: 0px;">
+                <div class="form-group" style="margin: auto;margin-bottom: 0px;width: 25%;"><label>Nombre Abreviado</label><input class="form-control" type="text"></div>
+                <div class="form-group" style="margin: auto;margin-bottom: 0px;width: 20%;"><label>Login</label><input class="form-control" type="text"></div>
+                <div class="form-group" style="margin: auto;margin-bottom: 0px;width: 30%;"><label>Contraseña</label><input class="form-control" type="password"></div>
+            </div>
+            <div class="container d-xl-flex justify-content-sm-end justify-content-md-around align-items-xl-center" style="height: 100%;width: 100%;margin-top: 16px;margin-bottom: 8px;padding-left: 0px;">
+                <div class="form-group" style="margin: auto;margin-bottom: 0px;width: 40%;"><label>Teléfono Despacho</label><input class="form-control" type="tel"></div>
+                <div class="form-group" style="margin: auto;margin-bottom: 0px;width: 40%;"><label>Teléfono Personal</label><input class="form-control" type="tel"></div>
+            </div>
+            <div class="container d-xl-flex justify-content-sm-end justify-content-md-around align-items-xl-center" style="height: 100%;width: 100%;margin-top: 16px;margin-bottom: 8px;padding-left: 0px;">
+                <div class="form-group" style="margin: auto;margin-bottom: 0px;width: 10%;"><label>Despacho</label><input class="form-control" type="text"></div>
+                <div class="form-group" style="margin: auto;margin-bottom: 0px;width: 20%;"><label>Tipo de Usuario</label><select class="form-control"><optgroup label="Tipo de Usuario"><option value="">Profesor</option><option value="13">Tipo 2</option><option value="14">Tipo 3</option></optgroup></select></div>
+                <div class="form-group"
+                    style="margin: auto;height: 30%;"><label>Fecha Entrada Departamento</label><input class="form-control" type="date" readonly=""></div>
+            </div>
+            <div class="container text-left d-xl-flex justify-content-sm-end justify-content-md-around align-items-xl-center" style="height: 100%;width: 100%;margin-top: 16px;margin-bottom: 8px;padding-left: 0px;">
+                <div class="form-group text-center" style="margin: auto;margin-bottom: 0px;width: 10%;"><label class="text-center">Miembro Actual</label><input type="checkbox"></div>
+                <div class="form-group text-center" style="margin: auto;margin-bottom: 0px;width: 10%;"><label>Miembro Consejo</label><input type="checkbox"></div>
+                <div class="form-group text-center" style="margin: auto;margin-bottom: 0px;width: 10%;"><label>Miembro Total</label><input type="checkbox"></div>
+                <div class="form-group text-center" style="margin: auto;margin-bottom: 0px;width: 10%;"><label>Imparte Docencia</label><input type="checkbox"></div>
+            </div>
+            <div class="form-group text-center" style="margin-top: 16px;"><label style="padding-right: 13px;">Imágen de Perfil</label><input type="file"></div>
+            <div class="form-group d-xl-flex justify-content-xl-center" style="width: 40%;margin: auto;"><button class="btn" type="button" style="background-color: #282828;font-weight: normal;color: #ffffff;margin-top: 9px;padding-bottom: 6px;">Guardar</button></div>
+        </form>
+    </main>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+    <script src="assets/js/agency.js"></script>
+</body>
+
+</html>
