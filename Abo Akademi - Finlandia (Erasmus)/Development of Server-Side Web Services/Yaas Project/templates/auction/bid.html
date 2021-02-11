@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <h2>Bid Auction</h2>
+{% endblock %}
+
+{% block content %}
+
+    <form action="{% url 'auction:bid' id %}" method="post">
+        {%  csrf_token %}
+        <p>Title: {{ title }}</p>
+        <p>Description: {{ description }}</p>
+        <p>Auctioneer: {{ auctioneer }}</p>
+        <p>Bid: <textarea name="new_price">{{ new_price }}</textarea></p>
+        <input type="submit" value="Bid">
+    </form>
+
+{% endblock %}

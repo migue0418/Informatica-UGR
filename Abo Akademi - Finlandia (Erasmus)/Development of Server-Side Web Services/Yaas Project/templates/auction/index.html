@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block head %}
+    <h2>{% trans "Welcome!" %}</h2>
+{% endblock %}
+
+{% block content %}
+     <a href="{% url 'auction:create' %}">{% trans "Add New Auction" %}</a>
+
+    {% for auction in auctions %}
+        {% if auction.status == "Active" %}
+            <h2>{{ auction.title }}</h2>
+            <p>{{ auction.description }}</p>
+            <p>{% trans "Bid: " %} {{ auction.current_price }}</p>
+            <li><a href="{% url 'auction:bid' auction.id %}">{% trans "Bid Auction" %}</a></li>
+            <li><a href="{% url 'auction:edit' auction.id %}">{% trans "Edit Auction" %}</a></li>
+            <br>
+        {% endif %}
+    {% empty %}
+        <p>{% trans "No Auctions Created" %}<p>
+    {%  endfor %}
+{% endblock %}

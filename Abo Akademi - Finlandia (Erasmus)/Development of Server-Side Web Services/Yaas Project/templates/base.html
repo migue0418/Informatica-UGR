@@ -1,0 +1,58 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html>
+    <style type= "text/css">
+        body {padding: 0 5em; margin:0}
+        h1 {padding: 1em 1em;}
+        h2 {border-top: 1px dotted #fff; margin-top: 2em}
+        p {margin: 1em 0}
+    </style>
+{% load i18n %}
+
+    <head>
+        <meta charset="utf-8">
+        <title>
+            {% block title %}
+                YAAS
+            {% endblock %}
+        </title>
+    </head>
+
+    <body>
+        <main>
+            {% block head %}
+                <h1>{% trans "Userpage" %}</h1>
+            {% endblock %}
+
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% block content %}
+            {% endblock %}
+
+            {% block body %}
+                <br><br>
+                 {% if user.is_authenticated %}
+                    <p>Current user: {{ user.username }}</p>
+                     <form action="/signout">
+                        <input type="submit" value="Signout">
+                    </form>
+                {% else %}
+                    <form action="/signin">
+                        <p>{% trans "You are not signed in!" %}</p>
+                        <input type="submit" value="Signin">
+                    </form>
+                    <form action="/signup">
+                        <input type="submit" value="Signup">
+                    </form>
+                {% endif %}
+            {% endblock %}
+
+        </main>
+    </body>
+</html>
