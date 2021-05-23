@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="css/styles.css">
+		<link rel="icon" type="image/png" href="iot-icon.png">
+		<title>Usuario</title>
+
+		<script src="/socket.io/socket.io.js"></script>
+		<script type="text/javascript">
+			var socket = io.connect('localhost:8080');
+			/**** Petición para actualizar los datos ****/
+			socket.on('actualizarDatos', function(data){
+				console.log("Va a actualizar datos");
+				document.getElementById('valor-temperatura').innerHTML = data['valorTemperatura'];
+				document.getElementById('valor-luminosidad').innerHTML = data['valorLuminosidad'];
+				actualizarAC(data['estadoAC']);
+				actualizarPersianas(data['estadoPersianas']);
+				console.log(data);
+				document.getElementById('mensaje-agente').innerHTML = data['error'];
+			});
+
+			function actualizarAC(valorAC){
+				document.getElementById('estado-ac').innerHTML = valorAC;
+
+				var botonAC = document.getElementById('ac-controlador');
+				if(valorAC == "ON"){
+					botonAC.innerHTML = "Apagar el AC";
+				}
+				else{
+					botonAC.innerHTML = "Encender el AC";
+				}
+			}
+
+			socket.on('estadoAC', function(data){
+				actualizarAC(data);
+			});
+
+			function actualizarPersianas(valorPersianas){
+				document.getElementById('estado-persianas').innerHTML = valorPersianas;
+
+				var botonPersianas = document.getElementById('persianas-controlador');
+				if(valorPersianas == "Abierto"){
+					botonPersianas.innerHTML = "Cerrar Persianas";
+				}
+				else{
+					botonPersianas.innerHTML = "Abrir Persianas";
+				}
+			}
+
+			socket.on('estadoPersianas', function(data){
+				actualizarPersianas(data);
+			});
+
+			socket.on('valorTemperatura', function(data){
+				document.getElementById('valor-temperatura').innerHTML = data;
+			});
+
+			socket.on('valorLuminosidad', function(data){
+				console.log("Cambia la luminosidad: ");
+				console.log(data['valorLuminosidad']);
+				document.getElementById('valor-luminosidad').innerHTML = data;
+			});
+
+
+			/**** Petición para abrir/cerrar las persianas ****/
+			function cambiarEstadoPersianas(){
+				socket.emit('cambiarEstadoPersianas');
+			}
+
+			/**** Petición para encender/apagar el AC ****/
+			function cambiarEstadoAC(){
+				socket.emit('cambiarEstadoAC');
+			}
+
+			socket.on('tiempoNav', function(data) {
+				document.getElementById('barra-nav').classList = data['tiempoNav'];
+			});
+		</script>
+	</head>
+
+	<body>
+		<nav id="barra-nav">
+			<a href="usuario.html" class="nav-menu">Usuario</a>
+			<a href="agente.html" class="nav-menu">Agente</a>
+			<a href="sensores.html" class="nav-menu">Sensores</a>
+		</nav>
+
+		<h1>Entidad Usuario</h1>
+
+		<section id="medidas">
+			<div id="luminosidad">
+				<strong>Luminosidad: </strong>
+				<p id="valor-luminosidad"></p>
+			</div>
+			<div id="temperatura">
+				<strong>Temperatura: </strong>
+				<p id="valor-temperatura"></p>
+			</div>
+		</section>
+
+		<section id="actuadores">
+			<div id="persianas">
+				<strong>Persianas: </strong>
+				<p id="estado-persianas"></p>
+			</div>
+			<div id="aire-acondicionado">
+				<strong>Aire Acondicionado: </strong>
+				<p id="estado-ac"></p>
+			</div>
+		</section>
+
+		<section id="controladores">
+			<button id="persianas-controlador" onclick="cambiarEstadoPersianas()"></button>
+			<button id="ac-controlador" onclick="cambiarEstadoAC()"></button>
+		</section>
+
+		<section id="agente">
+			<div>
+				<p id="mensaje-agente"></p>
+			</div>
+		</section>
+
+	</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="css/styles.css">
+		<link rel="icon" type="image/png" href="iot-icon.png">
+		<title>Agente</title>
+
+		<script src="/socket.io/socket.io.js"></script>
+		<script type="text/javascript">
+			var socket = io.connect('localhost:8080');
+
+			var temperaturaMaxima = 35;
+
+			var luminosidadMaxima = 70;
+			var luminosidadMinima = 0;
+
+			socket.on('agenteComprueba', function(data) {
+				console.log("Hola, soy el agente");
+				console.log("estadoAC = " + data['estadoAC']);
+				console.log("estadoPersianas = " + data['estadoPersianas']);
+				console.log("temperatura = " + data['valorTemperatura']);
+				console.log("luminosidad = " + data['valorLuminosidad']);
+
+				var ac = data['estadoAC'];
+				var persianas = data['estadoPersianas'];
+				var temperatura = data['valorTemperatura'];
+				var luminosidad = data['valorLuminosidad'];
+				var mensajeError = "";
+				var tiempo = "";
+
+				// Si el aire acondicionado está encendido
+				if(ac == 'ON' && persianas == 'Abierto'){
+					console.log("Chacho, las dos cosas a la vez no");
+					// Si la temperatura es alta, cerramos persianas
+					if(temperatura > temperaturaMaxima){
+						console.log("Ehh que te achicharras bro!");
+						mensajeError = "<strong>Agente: </strong>No puedes tener el AC encendido y las Persianas abiertas!<br>- Cierro las persianas.";
+						persianas = 'Cerrado';
+					}
+					// Si la temperatura es normal 
+					else {
+						console.log("Apaga el aire que te gusta mucho gastar!!");
+						mensajeError = "<strong>Agente: </strong>No puedes tener el AC encendido y las Persianas abiertas!<br>- Apago el AC.";
+						ac = 'OFF';
+					}
+				}
+
+				if(temperatura < 0){
+					tiempo = "rainy";
+				}
+				else if(temperatura >= 0 && temperatura < 30){
+					tiempo = "cloudy";
+				}
+				else{
+					tiempo = "sunny";
+				}
+
+				// El agente responde con los datos comprobados
+				console.log("Agente envía los datos");
+				socket.emit('agenteDatos', {
+					estadoAC: ac,
+					estadoPersianas: persianas,
+					valorTemperatura: temperatura,
+					valorLuminosidad: luminosidad,
+					error: mensajeError,
+					tiempoNav: tiempo,
+				});
+
+				document.getElementById('mensaje').innerHTML = mensajeError;
+			});
+
+			socket.on('tiempoNav', function(data) {
+				document.getElementById('barra-nav').classList = data['tiempoNav'];
+			});
+		</script>
+	</head>
+
+	<body>
+		<nav id="barra-nav">
+			<a href="usuario.html" class="nav-menu">Usuario</a>
+			<a href="agente.html" class="nav-menu">Agente</a>
+			<a href="sensores.html" class="nav-menu">Sensores</a>
+		</nav>
+
+		<h1>Entidad Agente</h1>
+
+		<section id="mensaje-agente">
+			<p id="mensaje"></p>
+		</section>
+
+    </body>
+</html>

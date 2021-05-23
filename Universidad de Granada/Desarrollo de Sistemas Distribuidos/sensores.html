@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="css/styles.css">
+		<link rel="icon" type="image/png" href="iot-icon.png">
+		<title>Sensores</title>
+
+		<script src="/socket.io/socket.io.js"></script>
+		<script type="text/javascript">
+			var socket = io.connect('localhost:8080');
+
+			function enviarValores(){
+				var temperatura = document.getElementById("valor-temperatura").value;
+				var luminosidad = document.getElementById("valor-luminosidad").value;
+
+				// Comprobar que sea un valor válido antes de mandarlo
+				if(luminosidad != ""){
+					if(!isNaN(luminosidad)){
+						socket.emit('cambioLuminosidad', luminosidad);
+					}
+					else {
+						document.getElementById("error").innerHTML = "ERROR: ";
+						document.getElementById("error-luminosidad").innerHTML = "El valor de la luminosidad tiene que ser numérico!";
+						document.getElementById("error-luminosidad").classList.remove("hidden");
+					}
+				}
+
+				// Comprobar que sea un valor válido antes de mandarlo
+				if(temperatura != ""){
+					if(!isNaN(temperatura)){
+						// La temperatura más baja posible es -273.5 y suponemos que el máximo es de 800 (en caso de incendio en la habitación)
+						if(temperatura < -273.5 || temperatura > 800){
+							document.getElementById("error").innerHTML = "ERROR: ";
+							document.getElementById("error-temperatura").innerHTML = "Introduce un valor de temperatura razonable...";
+							document.getElementById("error-temperatura").classList.remove("hidden");
+						}
+						else{
+							console.log("Temperatura correcta");
+							socket.emit('cambioTemperatura', temperatura);
+						}
+					}
+					else {
+						document.getElementById("error").innerHTML = "ERROR: ";
+						document.getElementById("error-temperatura").innerHTML = "El valor de la temperatura tiene que ser numérico!";
+						document.getElementById("error-temperatura").classList.remove("hidden");
+					}
+				}
+			}
+
+			socket.on('tiempoNav', function(data) {
+				document.getElementById('barra-nav').classList = data['tiempoNav'];
+			});
+		</script>
+	</head>
+
+	<body>
+		<nav id="barra-nav">
+			<a href="usuario.html" class="nav-menu">Usuario</a>
+			<a href="agente.html" class="nav-menu">Agente</a>
+			<a href="sensores.html" class="nav-menu">Sensores</a>
+		</nav>
+
+		<h1>Entidad Sensores</h1>
+
+		<section id="sensores">
+			<form action="javascript:void(0);" onsubmit="javascript:enviarValores();">
+				<label>Luminosidad: </label>
+				<input type="text" id="valor-luminosidad" name="luminosidad">
+
+				<label>Temperatura: </label>
+				<input type="text" id="valor-temperatura" name="temperatura">
+
+				<input type="submit" value="Enviar Valores">
+			</form>
+			
+			<p><strong>INFO: </strong>Puedes usar este formulario para cambiar los valores de temperatura y luminosidad de forma manual.</p>
+			
+			<div class="error">
+				<strong id="error"></strong>
+				<ul>
+					<li id="error-temperatura" class="hidden"></li>
+					<li id="error-luminosidad" class="hidden"></li>
+				</ul>
+			</div>
+		</section>
+    </body>
+</html>
