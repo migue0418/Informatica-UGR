@@ -3,6 +3,7 @@ var url = require("url");
 var fs = require("fs");
 var path = require("path");
 var socketio = require("socket.io");
+var request = require('request');
 
 var MongoClient = require('mongodb').MongoClient;
 var MongoServer = require('mongodb').Server;
@@ -150,6 +151,30 @@ MongoClient.connect("mongodb://localhost:27017/", {useNewUrlParser: true, useUni
 				io.sockets.emit('errorAgente', data);
 			});
 
+			// Uso de la API
+			client.on('buscaCiudad', function (data){
+				var tiempoAPI;
+				var url = `https://api.openweathermap.org/data/2.5/weather?q=${data}&appid=${APIKey}`;
+				console.log("Se va a consultar el tiempo en: " + data);
+
+				request(url, function (err, response, data) {
+					if(err){
+						console.log('Error! ', err);
+					}
+					else {
+						var tiempo = JSON.parse(data);
+						console.log('data:', tiempo);
+						if(tiempo.cod != '404'){
+							tiempoAPI = `Hacen ${tiempo.main.temp/10} grados en ${tiempo.name} y hace una humedad de ${tiempo.main.humidity} !`;
+							console.log('data:', tiempoAPI);
+							io.sockets.emit('tiempoCiudad', {});
+						}
+						else{
+							console.log("Ciudad no encontrada");
+						}
+					}
+				});
+			});
 		});
     });
 });
