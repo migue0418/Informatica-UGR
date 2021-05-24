@@ -38,7 +38,7 @@ body nav a.nav-menu {
 }
 
 body section {
-  margin-left: 3rem;
+  margin-left: 4rem;
 }
 
 body section#controladores {
@@ -47,7 +47,7 @@ body section#controladores {
 
 body section#controladores button {
   display: block;
-  margin: 1rem;
+  margin: 1rem 0;
 }
 
 body section#sensores form label, body section#sensores form input {
@@ -59,9 +59,71 @@ body section#agente strong {
   color: red;
 }
 
+body section#dibujo-casa {
+  position: absolut;
+}
+
+body section#dibujo-casa .pared-frontal {
+  background-color: #009bdb;
+  position: relative;
+  width: 650px;
+  height: 520px;
+  z-index: 5;
+}
+
+body section#dibujo-casa .pared-frontal .persiana {
+  background-color: #d99259;
+  position: relative;
+  top: 175px;
+  left: 102px;
+  width: 150px;
+  height: 150px;
+  z-index: 10;
+}
+
+body section#dibujo-casa .pared-frontal .animacion {
+  -webkit-transition: all 2s ease;
+  -moz-transition: all 2s ease;
+  -o-transition: all 2s ease;
+  -ms-transition: all 2s ease;
+  transition: all 2s ease;
+}
+
+body section#dibujo-casa .pared-frontal .abrir-persiana {
+  height: 25px;
+}
+
+body section#dibujo-casa .pared-frontal .ventana {
+  width: 250px;
+  height: 187px;
+  position: relative;
+  top: 160px;
+  left: 290px;
+  z-index: 15;
+}
+
+body section#dibujo-casa .pared-frontal .aire-acondicionado {
+  position: absolute;
+  top: 20px;
+  left: 30px;
+}
+
+body section#dibujo-casa .pared-frontal .aire-acondicionado .circulo-estado {
+  background-color: red;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  position: relative;
+  right: 175px;
+}
+
+body section#dibujo-casa .pared-frontal .aire-acondicionado .ac-encendido {
+  background-color: green;
+}
+
 body div {
   display: flex;
-  margin: 1rem;
+  margin: 1rem 0;
 }
 
 body div p {

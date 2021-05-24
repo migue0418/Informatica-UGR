@@ -38,14 +38,14 @@ body {
     }
     
     section {
-        margin-left: 3rem;
+        margin-left: 4rem;
     
         &#controladores {
             display: block;
     
             button{
                 display: block;
-                margin: 1rem;
+                margin: 1rem 0;
             }
         }
     
@@ -64,11 +64,73 @@ body {
                 color: red;
             }
         }
+
+        &#dibujo-casa {
+            position: absolut;
+          
+            .pared-frontal {
+                background-color: rgb(0, 155, 219);
+                position: relative;
+                width: 650px;
+                height: 520px;
+                z-index: 5;
+          
+                .persiana {
+                    background-color: rgb(217, 146, 89);
+                    position: relative;
+                    top: 175px;
+                    left: 102px;
+                    width: 150px;
+                    height: 150px;
+                    z-index: 10;
+                }
+            
+                .animacion {
+                    -webkit-transition: all 2s ease;  
+                    -moz-transition: all 2s ease;  
+                    -o-transition: all 2s ease;  
+                    -ms-transition: all 2s ease;  
+                    transition: all 2s ease;
+                }
+            
+                .abrir-persiana {
+                    height: 25px;
+                }
+            
+                .ventana{
+                    width: 250px;
+                    height: 187px;
+                    position: relative;
+                    top: 160px;
+                    left: 290px;
+                    z-index: 15;
+                }
+            
+                .aire-acondicionado{
+                    position: absolute;
+                    top: 20px;
+                    left: 30px;
+
+                    .circulo-estado {
+                        background-color: red;
+                        width: 10px;
+                        height: 10px;
+                        border-radius: 50%;
+                        position: relative;
+                        right: 175px;
+                    }
+
+                    .ac-encendido{
+                        background-color: green;
+                    }
+                }
+            }
+        }
     }
       
     div {
         display: flex;
-        margin: 1rem;
+        margin: 1rem 0;
     
         p {
             margin: 0;

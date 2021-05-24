@@ -6,6 +6,11 @@
 		<link rel="icon" type="image/png" href="iot-icon.png">
 		<title>Usuario</title>
 
+		<script defer src="/node_modules/@fortawesome/fontawesome-free/js/brands.js"></script>
+		<script defer src="/node_modules/@fortawesome/fontawesome-free/js/regular.js"></script>
+		<script defer src="/node_modules/@fortawesome/fontawesome-free/js/solid.js"></script>
+		<script defer src="/node_modules/@fortawesome/fontawesome-free/js/fontawesome.js"></script>
+		
 		<script src="/socket.io/socket.io.js"></script>
 		<script type="text/javascript">
 			var socket = io.connect('localhost:8080');
@@ -22,12 +27,23 @@
 
 			function actualizarAC(valorAC){
 				document.getElementById('estado-ac').innerHTML = valorAC;
+				var ac = document.getElementById('circulo-ac');
 
 				var botonAC = document.getElementById('ac-controlador');
 				if(valorAC == "ON"){
+					// Estaba apagado y se enciende
+					if(!ac.classList.contains('ac-encendido')){
+						ac.classList.add('ac-encendido');
+					}
+
 					botonAC.innerHTML = "Apagar el AC";
 				}
 				else{
+					// Estaba encendido y se apaga
+					if(ac.classList.contains('ac-encendido')){
+						ac.classList.remove('ac-encendido');
+					}
+
 					botonAC.innerHTML = "Encender el AC";
 				}
 			}
@@ -38,12 +54,23 @@
 
 			function actualizarPersianas(valorPersianas){
 				document.getElementById('estado-persianas').innerHTML = valorPersianas;
+				var persianas = document.getElementById('dibujo-persianas');
 
 				var botonPersianas = document.getElementById('persianas-controlador');
 				if(valorPersianas == "Abierto"){
+					// Estaba cerrado y se abre
+					if(!persianas.classList.contains('abrir-persiana')){
+						persianas.classList.add('abrir-persiana');
+					}
+
 					botonPersianas.innerHTML = "Cerrar Persianas";
 				}
 				else{
+					// Estaba abierto y se cierra
+					if(persianas.classList.contains('abrir-persiana')){
+						persianas.classList.remove('abrir-persiana');
+					}
+
 					botonPersianas.innerHTML = "Abrir Persianas";
 				}
 			}
@@ -90,10 +117,12 @@
 
 		<section id="medidas">
 			<div id="luminosidad">
+				<i class="far fa-lightbulb"></i>
 				<strong>Luminosidad: </strong>
 				<p id="valor-luminosidad"></p>
 			</div>
 			<div id="temperatura">
+				<i class="fas fa-thermometer-half"></i>
 				<strong>Temperatura: </strong>
 				<p id="valor-temperatura"></p>
 			</div>
@@ -101,10 +130,12 @@
 
 		<section id="actuadores">
 			<div id="persianas">
+				<i class="fas fa-tint"></i>
 				<strong>Persianas: </strong>
 				<p id="estado-persianas"></p>
 			</div>
 			<div id="aire-acondicionado">
+				<i class="fas fa-wind"></i>
 				<strong>Aire Acondicionado: </strong>
 				<p id="estado-ac"></p>
 			</div>
@@ -118,6 +149,19 @@
 		<section id="agente">
 			<div>
 				<p id="mensaje-agente"></p>
+			</div>
+		</section>
+		
+		<section id="dibujo-casa">
+			<div class="pared-frontal">
+				<div class="ventana">
+					<img src="images/ventana.png">
+				</div>
+				<div id="dibujo-persianas" class="persiana animacion"></div>
+				<div class="aire-acondicionado">
+					<img src="images/air-conditioner.png">
+					<div id="circulo-ac" class="circulo-estado animacion"></div>
+				</div>
 			</div>
 		</section>
 

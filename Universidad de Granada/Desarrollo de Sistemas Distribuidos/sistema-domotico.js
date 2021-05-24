@@ -145,6 +145,10 @@ MongoClient.connect("mongodb://localhost:27017/", {useNewUrlParser: true, useUni
 				console.log("Se ha recibido un nuevo valor de temperatura: " + data);
 				actualizarDatos();
 			});
+			
+			client.on('mensajeAgente', function (data) {
+				io.sockets.emit('errorAgente', data);
+			});
 
 		});
     });
@@ -153,4 +157,3 @@ MongoClient.connect("mongodb://localhost:27017/", {useNewUrlParser: true, useUni
 module.exports = { httpServer };
 
 console.log("Servicio MongoDB iniciado");
-

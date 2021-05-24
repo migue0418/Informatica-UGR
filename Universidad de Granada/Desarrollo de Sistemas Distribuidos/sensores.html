@@ -13,16 +13,28 @@
 			function enviarValores(){
 				var temperatura = document.getElementById("valor-temperatura").value;
 				var luminosidad = document.getElementById("valor-luminosidad").value;
+				var error_temperatura = document.getElementById("error-temperatura");
+				var error_luminosidad = document.getElementById("error-luminosidad");
+				var error = document.getElementById("error");
 
 				// Comprobar que sea un valor válido antes de mandarlo
 				if(luminosidad != ""){
 					if(!isNaN(luminosidad)){
-						socket.emit('cambioLuminosidad', luminosidad);
+						if(luminosidad >=0 && luminosidad <=100){
+							socket.emit('cambioLuminosidad', luminosidad);
+							error_luminosidad.innerHTML = "";
+							error_luminosidad.classList.add("hidden");
+						}
+						else{
+							error.innerHTML = "ERROR: ";
+							error_luminosidad.innerHTML = "El valor de la luminosidad debe estar entre 0 y 100!";
+							error_luminosidad.classList.remove("hidden");
+						}
 					}
 					else {
-						document.getElementById("error").innerHTML = "ERROR: ";
-						document.getElementById("error-luminosidad").innerHTML = "El valor de la luminosidad tiene que ser numérico!";
-						document.getElementById("error-luminosidad").classList.remove("hidden");
+						error.innerHTML = "ERROR: ";
+						error_luminosidad.innerHTML = "El valor de la luminosidad tiene que ser numérico!";
+						error_luminosidad.classList.remove("hidden");
 					}
 				}
 
@@ -31,20 +43,25 @@
 					if(!isNaN(temperatura)){
 						// La temperatura más baja posible es -273.5 y suponemos que el máximo es de 800 (en caso de incendio en la habitación)
 						if(temperatura < -273.5 || temperatura > 800){
-							document.getElementById("error").innerHTML = "ERROR: ";
-							document.getElementById("error-temperatura").innerHTML = "Introduce un valor de temperatura razonable...";
-							document.getElementById("error-temperatura").classList.remove("hidden");
+							error.innerHTML = "ERROR: ";
+							error_temperatura.innerHTML = "Introduce un valor de temperatura razonable...";
+							error_temperatura.classList.remove("hidden");
 						}
 						else{
-							console.log("Temperatura correcta");
 							socket.emit('cambioTemperatura', temperatura);
+							error_temperatura.innerHTML = "";
+							error_temperatura.classList.add("hidden");
 						}
 					}
 					else {
-						document.getElementById("error").innerHTML = "ERROR: ";
-						document.getElementById("error-temperatura").innerHTML = "El valor de la temperatura tiene que ser numérico!";
-						document.getElementById("error-temperatura").classList.remove("hidden");
+						error.innerHTML = "ERROR: ";
+						error_temperatura.innerHTML = "El valor de la temperatura tiene que ser numérico!";
+						error_temperatura.classList.remove("hidden");
 					}
+				}
+
+				if(error_temperatura.classList.contains('hidden') && error_luminosidad.classList.contains('hidden')){
+					error.innerHTML = "";
 				}
 			}
 

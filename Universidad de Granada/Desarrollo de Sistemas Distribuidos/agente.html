@@ -31,19 +31,18 @@
 
 				// Si el aire acondicionado está encendido
 				if(ac == 'ON' && persianas == 'Abierto'){
-					console.log("Chacho, las dos cosas a la vez no");
+					mensajeError = "<strong>Agente: </strong>No puedes tener el AC encendido y las Persianas abiertas!<br><ul>";
 					// Si la temperatura es alta, cerramos persianas
 					if(temperatura > temperaturaMaxima){
-						console.log("Ehh que te achicharras bro!");
-						mensajeError = "<strong>Agente: </strong>No puedes tener el AC encendido y las Persianas abiertas!<br>- Cierro las persianas.";
+						mensajeError += "<li>Cierro las persianas porque hace calor.</li>";
 						persianas = 'Cerrado';
 					}
 					// Si la temperatura es normal 
 					else {
-						console.log("Apaga el aire que te gusta mucho gastar!!");
-						mensajeError = "<strong>Agente: </strong>No puedes tener el AC encendido y las Persianas abiertas!<br>- Apago el AC.";
+						mensajeError += "<li>Apago el AC porque no hace calor.</li>";
 						ac = 'OFF';
 					}
+					mensajeError += "</ul>";
 				}
 
 				if(temperatura < 0){
