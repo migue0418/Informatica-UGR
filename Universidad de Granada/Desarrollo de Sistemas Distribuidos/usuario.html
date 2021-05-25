@@ -23,6 +23,7 @@
 				actualizarPersianas(data['estadoPersianas']);
 				console.log(data);
 				document.getElementById('mensaje-agente').innerHTML = data['error'];
+				document.getElementById('ciudad').innerHTML = data['ciudad'];
 			});
 
 			function actualizarAC(valorAC){
@@ -131,6 +132,11 @@
 
 				<input type="submit" value="Buscar">
 			</form>
+			<div id="ciudad-api">
+				<i class="fas fa-map-marked-alt"></i>
+				<strong>Ciudad: </strong>
+				<p id="ciudad"></p>
+			</div>
 			<div id="error-api"></div>
 		</section>
 

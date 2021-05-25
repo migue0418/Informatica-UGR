@@ -49,6 +49,7 @@ var httpServer = http.createServer(
 // Declaramos las variables de temperatura y luminosidad (sensores)
 var temperatura = 20, temperatureMax = 30, temperatureMin = 15;
 var luminosidad = 20, brightnessMax = 30, brightnessMin = 15;
+var ciudadActual = "No definida";
 
 // Declaramos los actuadores
 var estadoPersianas = 'Abierto', estadoAC = 'OFF';
@@ -127,6 +128,7 @@ MongoClient.connect("mongodb://localhost:27017/", {useNewUrlParser: true, useUni
 					valorTemperatura: temperatura,
 					valorLuminosidad: luminosidad,
 					error: data['error'],
+					ciudad: ciudadActual
 				});
 
 				io.sockets.emit('tiempoNav', {
@@ -153,9 +155,10 @@ MongoClient.connect("mongodb://localhost:27017/", {useNewUrlParser: true, useUni
 
 			// Uso de la API
 			client.on('buscaCiudad', function (data){
-				var tiempoAPI;
-				var url = `https://api.openweathermap.org/data/2.5/weather?q=${data}&appid=${APIKey}`;
-				console.log("Se va a consultar el tiempo en: " + data);
+				var tiempoCiudad;
+				var url = `https://api.openweathermap.org/data/2.5/weather?q=${data}&units=metric&appid=${APIKey}`;
+				
+				console.log("\nSe va a consultar el tiempo en: " + data);
 
 				request(url, function (err, response, data) {
 					if(err){
@@ -163,11 +166,24 @@ MongoClient.connect("mongodb://localhost:27017/", {useNewUrlParser: true, useUni
 					}
 					else {
 						var tiempo = JSON.parse(data);
-						console.log('data:', tiempo);
-						if(tiempo.cod != '404'){
-							tiempoAPI = `Hacen ${tiempo.main.temp/10} grados en ${tiempo.name} y hace una humedad de ${tiempo.main.humidity} !`;
-							console.log('data:', tiempoAPI);
-							io.sockets.emit('tiempoCiudad', {});
+						// El código 200 es un código de la api que marca que todo ha ido bien
+						if(tiempo.cod == '200'){
+							temperatura = tiempo.main.temp;
+							ciudadActual = tiempo.name;
+							
+							tiempoCiudad = {
+								temperatura: tiempo.main.temp, 
+								ciudad: tiempo.name, 
+								humedad: tiempo.main.humidity,
+								pronostico: tiempo.weather[0].main,
+								amanecer: tiempo.sys.sunrise,
+								atardecer: tiempo.sys.sunset,
+							};
+
+							actualizarDatos();
+							console.log('Datos relevantes:', tiempoCiudad);
+
+							io.sockets.emit('tiempoCiudad', tiempoCiudad);
 						}
 						else{
 							console.log("Ciudad no encontrada");
