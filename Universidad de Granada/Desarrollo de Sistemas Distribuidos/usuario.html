@@ -114,6 +114,16 @@
 				}
 			}
 
+			/**** Mostramos en la tabla los datos que acaban de ser introducidos en la BD ****/
+			socket.on('introducirBD', function(data){
+				var tabla = document.getElementById('historico-bd');
+				var fila = document.createElement('tr');
+				
+				tabla.innerHTML = '<td>' + data['id'] + '</td><td>' + data['ciudad'] + '</td><td>' + data['temperatura'] + '</td><td>' + data['luminosidad'] + '</td><td>' + data['fecha'] + '</td>';
+				
+				listElement.appendChild(fila);
+			});
+
 		</script>
 	</head>
 
@@ -138,6 +148,21 @@
 				<p id="ciudad"></p>
 			</div>
 			<div id="error-api"></div>
+		</section>
+
+		<section id="database">
+			<table id="historico-bd">
+				<tr>
+					<th>ID</th>
+					<th>Ciudad</th>
+					<th>Temperatura</th>
+					<th>Luminosidad</th>
+					<th>Fecha</th>
+				</tr>
+			</table>
+			<ul id="list">
+
+			</ul>
 		</section>
 
 		<section id="medidas">

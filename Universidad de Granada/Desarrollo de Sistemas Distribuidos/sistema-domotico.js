@@ -49,6 +49,7 @@ var httpServer = http.createServer(
 // Declaramos las variables de temperatura y luminosidad (sensores)
 var temperatura = 20, temperatureMax = 30, temperatureMin = 15;
 var luminosidad = 20, brightnessMax = 30, brightnessMin = 15;
+var ID = 1;
 var ciudadActual = "No definida";
 
 // Declaramos los actuadores
@@ -116,11 +117,27 @@ MongoClient.connect("mongodb://localhost:27017/", {useNewUrlParser: true, useUni
 			}
 
 			// El agente responde
+			var datosBD = "";
 			client.on('agenteDatos', function(data){
 				estadoAC = data['estadoAC'];
 				estadoPersianas = data['estadoPersianas'];
 				temperatura = data['valorTemperatura'];
 				luminosidad = data['valorLuminosidad'];
+
+				// Insertamos en la Base de Datos cuando hay un cambio
+				var date =  new Date();
+        		var fecha = (date.getMonth()+1) + "/" + date.getDate()+ "/" + date.getFullYear() + " - "+ date.getHours() + ":" + (date.getMinutes()<10?'0':'') + date.getMinutes();
+
+				datosBD = {
+					id: ID,
+					ciudad: ciudadActual,
+					temperatura: temperatura, 
+					luminosidad: luminosidad, 
+					fecha: fecha
+				};
+
+				collection.insertOne(datosBD, {safe:true}, function(err, result) {});
+				io.sockets.emit('introducirBD', datosBD);
 
 				io.sockets.emit('actualizarDatos', {
 					estadoAC: estadoAC,
@@ -139,12 +156,14 @@ MongoClient.connect("mongodb://localhost:27017/", {useNewUrlParser: true, useUni
 			/**** Usando los sensores ****/
 			client.on('cambioLuminosidad', function (data) {
 				luminosidad = data;
+				ciudadActual = "No Definida";
 				console.log("Se ha recibido un nuevo valor de luminosidad: " + data);
 				actualizarDatos();
 			});
 			
 			client.on('cambioTemperatura', function (data) {
 				temperatura = data;
+				ciudadActual = "No Definida";
 				console.log("Se ha recibido un nuevo valor de temperatura: " + data);
 				actualizarDatos();
 			});
@@ -191,6 +210,8 @@ MongoClient.connect("mongodb://localhost:27017/", {useNewUrlParser: true, useUni
 					}
 				});
 			});
+
+
 		});
     });
 });

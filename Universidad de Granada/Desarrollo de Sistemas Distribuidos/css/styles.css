@@ -121,6 +121,23 @@ body section#dibujo-casa .pared-frontal .aire-acondicionado .ac-encendido {
   background-color: green;
 }
 
+body section#database table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  text-align: center;
+}
+
+body section#database table td, body section#database table th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+body section#database table tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
 body div {
   display: flex;
   margin: 1rem 0;
