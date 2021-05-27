@@ -38,7 +38,7 @@ body {
     }
     
     section {
-        margin-left: 4rem;
+        margin: 0 4rem;
     
         &#controladores {
             display: block;
@@ -168,6 +168,10 @@ body {
             li{
                 margin-bottom: 1rem;
             }
+        }
+
+        &.myTable_wrapper{
+            display: block;
         }
     }
 

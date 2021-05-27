@@ -38,7 +38,7 @@ body nav a.nav-menu {
 }
 
 body section {
-  margin-left: 4rem;
+  margin: 0 4rem;
 }
 
 body section#controladores {
@@ -160,6 +160,10 @@ body div.error strong {
 
 body div.error li {
   margin-bottom: 1rem;
+}
+
+body div.myTable_wrapper {
+  display: block;
 }
 
 body .hidden {

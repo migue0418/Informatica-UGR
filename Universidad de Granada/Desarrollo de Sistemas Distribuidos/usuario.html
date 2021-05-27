@@ -6,10 +6,18 @@
 		<link rel="icon" type="image/png" href="iot-icon.png">
 		<title>Usuario</title>
 
+		<!--Script para usar Fontawesome-->
 		<script defer src="/node_modules/@fortawesome/fontawesome-free/js/brands.js"></script>
 		<script defer src="/node_modules/@fortawesome/fontawesome-free/js/regular.js"></script>
 		<script defer src="/node_modules/@fortawesome/fontawesome-free/js/solid.js"></script>
 		<script defer src="/node_modules/@fortawesome/fontawesome-free/js/fontawesome.js"></script>
+
+		<!--Script para usar las tablas de Bootstrap-->
+		<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">   
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<link rel="stylesheet" href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
+		<script type="text/javascript" src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+		<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 		
 		<script src="/socket.io/socket.io.js"></script>
 		<script type="text/javascript">
@@ -116,14 +124,33 @@
 
 			/**** Mostramos en la tabla los datos que acaban de ser introducidos en la BD ****/
 			socket.on('introducirBD', function(data){
-				var tabla = document.getElementById('historico-bd');
+				var tabla = document.getElementById('medidas-actuales');
 				var fila = document.createElement('tr');
 				
-				tabla.innerHTML = '<td>' + data['id'] + '</td><td>' + data['ciudad'] + '</td><td>' + data['temperatura'] + '</td><td>' + data['luminosidad'] + '</td><td>' + data['fecha'] + '</td>';
+				fila.innerHTML = '<td>' + data['id'] + '</td><td>' + data['ciudad'] + '</td><td>' + data['temperatura'] + '</td><td>' + data['luminosidad'] + '</td><td>' + data['fecha'] + '</td>';
 				
-				listElement.appendChild(fila);
+				tabla.appendChild(fila);
 			});
 
+			function cargarBD() {
+				var thead = document.getElementById('cabecera-tabla');
+				var cabecera = document.createElement('tr');
+				
+				cabecera.innerHTML = '<th> </th><th>Ciudad</th><th>Temperatura</th><th>Luminosidad</th><th>Fecha</th>';
+				thead.appendChild(cabecera);
+
+				socket.emit('peticionBD');
+
+				socket.on('cargarBD', function(data){
+					var tbody = document.getElementById('cuerpo-tabla'), i;
+
+					for (i = 0; i < data.length; i++){
+						var fila = document.createElement('tr');
+						fila.innerHTML = '<td>' + i + '</td><td>' + data[i]['ciudad'] + '</td><td>' + data[i]['temperatura'] + '</td><td>' + data[i]['luminosidad'] + '</td><td>' + data[i]['fecha'] + '</td>';
+						tbody.appendChild(fila);
+					}
+				});
+			}
 		</script>
 	</head>
 
@@ -151,7 +178,7 @@
 		</section>
 
 		<section id="database">
-			<table id="historico-bd">
+			<table id="medidas-actuales">
 				<tr>
 					<th>ID</th>
 					<th>Ciudad</th>
@@ -160,9 +187,6 @@
 					<th>Fecha</th>
 				</tr>
 			</table>
-			<ul id="list">
-
-			</ul>
 		</section>
 
 		<section id="medidas">
@@ -215,5 +239,12 @@
 			</div>
 		</section>
 
+		<section id="historico-db">
+			<button id="boton-bd" onclick="cargarBD()">Cargar BD (Histórico)</button>
+			<table id="myTable" class="table table-striped">
+				<thead id="cabecera-tabla"></thead>
+				<tbody id="cuerpo-tabla"></tbody>
+			</table> 
+		</section>
 	</body>
 </html>

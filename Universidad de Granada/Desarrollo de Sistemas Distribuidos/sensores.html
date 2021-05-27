@@ -16,12 +16,13 @@
 				var error_temperatura = document.getElementById("error-temperatura");
 				var error_luminosidad = document.getElementById("error-luminosidad");
 				var error = document.getElementById("error");
+				var envia_luminosidad = false, envia_temperatura = false;
 
 				// Comprobar que sea un valor válido antes de mandarlo
 				if(luminosidad != ""){
 					if(!isNaN(luminosidad)){
 						if(luminosidad >=0 && luminosidad <=100){
-							socket.emit('cambioLuminosidad', luminosidad);
+							envia_luminosidad = true;
 							error_luminosidad.innerHTML = "";
 							error_luminosidad.classList.add("hidden");
 						}
@@ -48,7 +49,7 @@
 							error_temperatura.classList.remove("hidden");
 						}
 						else{
-							socket.emit('cambioTemperatura', temperatura);
+							envia_temperatura = true;
 							error_temperatura.innerHTML = "";
 							error_temperatura.classList.add("hidden");
 						}
@@ -62,6 +63,20 @@
 
 				if(error_temperatura.classList.contains('hidden') && error_luminosidad.classList.contains('hidden')){
 					error.innerHTML = "";
+				}
+
+				// Si los dos valores son correctos, enviamos los dos juntos (no se crean dos modificaciones en bd, sólo una)
+				if(envia_luminosidad && envia_temperatura){
+					socket.emit('enviaInfoSensores', {
+						luminosidad: luminosidad,
+						temperatura: temperatura,
+					});
+				}
+				else if(envia_luminosidad){
+					socket.emit('cambioLuminosidad', luminosidad);
+				}
+				else if(envia_temperatura){
+					socket.emit('cambioTemperatura', temperatura);
 				}
 			}
 

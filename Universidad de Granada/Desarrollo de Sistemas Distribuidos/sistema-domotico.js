@@ -49,7 +49,6 @@ var httpServer = http.createServer(
 // Declaramos las variables de temperatura y luminosidad (sensores)
 var temperatura = 20, temperatureMax = 30, temperatureMin = 15;
 var luminosidad = 20, brightnessMax = 30, brightnessMin = 15;
-var ID = 1;
 var ciudadActual = "No definida";
 
 // Declaramos los actuadores
@@ -129,7 +128,6 @@ MongoClient.connect("mongodb://localhost:27017/", {useNewUrlParser: true, useUni
         		var fecha = (date.getMonth()+1) + "/" + date.getDate()+ "/" + date.getFullYear() + " - "+ date.getHours() + ":" + (date.getMinutes()<10?'0':'') + date.getMinutes();
 
 				datosBD = {
-					id: ID,
 					ciudad: ciudadActual,
 					temperatura: temperatura, 
 					luminosidad: luminosidad, 
@@ -154,6 +152,13 @@ MongoClient.connect("mongodb://localhost:27017/", {useNewUrlParser: true, useUni
 			});
 
 			/**** Usando los sensores ****/
+			client.on('enviaInfoSensores', function (data) {
+				luminosidad = data['luminosidad'];
+				temperatura = data['temperatura'];
+				console.log("Se ha recibido un nuevo valor de luminosidad: " + data['luminosidad'] + ' y de temperatura: ' + data['temperatura']);
+				actualizarDatos();
+			});
+
 			client.on('cambioLuminosidad', function (data) {
 				luminosidad = data;
 				ciudadActual = "No Definida";
@@ -211,7 +216,11 @@ MongoClient.connect("mongodb://localhost:27017/", {useNewUrlParser: true, useUni
 				});
 			});
 
-
+			client.on('peticionBD', function(data){
+				collection.find().sort({_id:+1}).toArray(function(err, results){
+					client.emit('cargarBD', results);
+				});
+			});
 		});
     });
 });
