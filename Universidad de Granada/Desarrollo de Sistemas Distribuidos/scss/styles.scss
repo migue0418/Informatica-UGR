@@ -10,7 +10,7 @@ body {
         text-shadow: 0.03em 0.07em 0 rgba(0, 0, 0, 0.3);
     }
 
-    nav {
+    nav#barra-nav {
         display: flex;
         justify-content: space-around;
         
@@ -154,6 +154,10 @@ body {
         p {
             margin: 0;
             padding-left: 0.5rem;
+        }
+
+        svg {
+            margin-right: 0.5rem;
         }
     
         &.error {

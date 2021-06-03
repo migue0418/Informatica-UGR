@@ -32,6 +32,18 @@
 				console.log(data);
 				document.getElementById('mensaje-agente').innerHTML = data['error'];
 				document.getElementById('ciudad').innerHTML = data['ciudad'];
+				if(data['hora'] != ""){
+					document.getElementById('hora-actual').innerHTML = data['hora'];
+					document.getElementById('amanecer').innerHTML = data['amanecer'];
+					document.getElementById('atardecer').innerHTML = data['atardecer'];
+				}
+				document.getElementById('error-ciudad').innerHTML = "";
+			});
+
+			socket.on('ciudadNoEncontrada', function(data){
+				if(data != ""){
+					document.getElementById('error-ciudad').innerHTML = data;
+				}
 			});
 
 			function actualizarAC(valorAC){
@@ -127,26 +139,37 @@
 				var tabla = document.getElementById('medidas-actuales');
 				var fila = document.createElement('tr');
 				
-				fila.innerHTML = '<td>' + data['id'] + '</td><td>' + data['ciudad'] + '</td><td>' + data['temperatura'] + '</td><td>' + data['luminosidad'] + '</td><td>' + data['fecha'] + '</td>';
+				fila.innerHTML = '<td>' + data['ciudad'] + '</td><td>' + data['temperatura'] + '</td><td>' + data['luminosidad'] + '</td><td>' + data['pronostico'] + '</td><td>' + data['fecha'] + '</td>';
 				
 				tabla.appendChild(fila);
 			});
 
 			function cargarBD() {
 				var thead = document.getElementById('cabecera-tabla');
+				
+				// Eliminamos todos los hijos para que al clickar otra vez, no genere la tabla mal
+				while (thead.firstChild) {
+					thead.removeChild(thead.lastChild);
+				}
+
 				var cabecera = document.createElement('tr');
 				
-				cabecera.innerHTML = '<th> </th><th>Ciudad</th><th>Temperatura</th><th>Luminosidad</th><th>Fecha</th>';
+				cabecera.innerHTML = '<th> </th><th>Ciudad</th><th>Temperatura</th><th>Luminosidad</th><th>Pronóstico</th><th>Fecha</th>';
 				thead.appendChild(cabecera);
 
 				socket.emit('peticionBD');
 
 				socket.on('cargarBD', function(data){
 					var tbody = document.getElementById('cuerpo-tabla'), i;
+					
+					// Eliminamos todos los hijos para que al clickar otra vez, no genere la tabla mal
+					while (tbody.firstChild) {
+						tbody.removeChild(tbody.lastChild);
+					}
 
 					for (i = 0; i < data.length; i++){
 						var fila = document.createElement('tr');
-						fila.innerHTML = '<td>' + i + '</td><td>' + data[i]['ciudad'] + '</td><td>' + data[i]['temperatura'] + '</td><td>' + data[i]['luminosidad'] + '</td><td>' + data[i]['fecha'] + '</td>';
+						fila.innerHTML = '<td>' + i + '</td><td>' + data[i]['ciudad'] + '</td><td>' + data[i]['temperatura'] + '</td><td>' + data[i]['luminosidad'] + '</td><td>' + data[i]['pronostico'] + '</td><td>' + data[i]['fecha'] + '</td>';
 						tbody.appendChild(fila);
 					}
 				});
@@ -174,16 +197,33 @@
 				<strong>Ciudad: </strong>
 				<p id="ciudad"></p>
 			</div>
-			<div id="error-api"></div>
+			<div id="hora-actual-api">
+				<i class="far fa-clock"></i>
+				<strong>Hora Actual: </strong>
+				<p id="hora-actual"></p>
+			</div>
+			<div id="amanecer-api">
+				<i class="far fa-clock"></i>
+				<strong>Amanecer: </strong>
+				<p id="amanecer"></p>
+			</div>
+			<div id="atardecer-api">
+				<i class="far fa-clock"></i>
+				<strong>Atardecer: </strong>
+				<p id="atardecer"></p>
+			</div>
+			<div id="error-api">
+				<p id="error-ciudad"></p>
+			</div>
 		</section>
 
 		<section id="database">
 			<table id="medidas-actuales">
 				<tr>
-					<th>ID</th>
 					<th>Ciudad</th>
 					<th>Temperatura</th>
 					<th>Luminosidad</th>
+					<th>Pronóstico</th>
 					<th>Fecha</th>
 				</tr>
 			</table>

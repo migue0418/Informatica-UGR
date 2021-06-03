@@ -47,9 +47,13 @@ var httpServer = http.createServer(
 
 
 // Declaramos las variables de temperatura y luminosidad (sensores)
-var temperatura = 20, temperatureMax = 30, temperatureMin = 15;
-var luminosidad = 20, brightnessMax = 30, brightnessMin = 15;
-var ciudadActual = "No definida";
+var temperatura = 20.00, luminosidad = 50.00;
+// Declaramos las variables para la ciudad y el pronóstico
+var ciudadActual = "No definida", pronosticoActual = "No definido";
+// También las que tienen que ver con los horarios
+var hora_actual = "", amanecer = "", atardecer = "", zona_horaria = "";
+// Mensaje error ciudad no encontrada
+var errorCiudad = "";
 
 // Declaramos los actuadores
 var estadoPersianas = 'Abierto', estadoAC = 'OFF';
@@ -112,12 +116,30 @@ MongoClient.connect("mongodb://localhost:27017/", {useNewUrlParser: true, useUni
 					estadoPersianas: estadoPersianas,
 					valorTemperatura: temperatura,
 					valorLuminosidad: luminosidad,
+					pronostico: pronosticoActual,
+					hora: hora_actual,
+					amanecer: amanecer,
+					atardecer: atardecer,
+					zona: zona_horaria,
 				});
+			}
+
+			// Para volver a poner los valores por defecto de las variables (No hay ciudad)
+			function restaurarValores() {
+				temperatura = 20.00;
+				luminosidad = 50.00;
+				ciudadActual = "No definida";
+				pronosticoActual = "No definido";
+				hora_actual = amanecer = atardecer = zona_horaria = "";
+				errorCiudad = "";
 			}
 
 			// El agente responde
 			var datosBD = "";
 			client.on('agenteDatos', function(data){
+				if(data['pronostico'] == "No Definido"){
+					restaurarValores();
+				}
 				estadoAC = data['estadoAC'];
 				estadoPersianas = data['estadoPersianas'];
 				temperatura = data['valorTemperatura'];
@@ -125,12 +147,14 @@ MongoClient.connect("mongodb://localhost:27017/", {useNewUrlParser: true, useUni
 
 				// Insertamos en la Base de Datos cuando hay un cambio
 				var date =  new Date();
-        		var fecha = (date.getMonth()+1) + "/" + date.getDate()+ "/" + date.getFullYear() + " - "+ date.getHours() + ":" + (date.getMinutes()<10?'0':'') + date.getMinutes();
+				var dia = ((date.getMonth()+1)<10? '0' +(date.getMonth()+1): (date.getMonth()+1));
+        		var fecha = dia + "/" + date.getDate()+ "/" + date.getFullYear() + " - "+ date.getHours() + ":" + (date.getMinutes()<10?'0':'') + date.getMinutes();
 
 				datosBD = {
 					ciudad: ciudadActual,
 					temperatura: temperatura, 
-					luminosidad: luminosidad, 
+					luminosidad: luminosidad,
+					pronostico: pronosticoActual, 
 					fecha: fecha
 				};
 
@@ -143,7 +167,11 @@ MongoClient.connect("mongodb://localhost:27017/", {useNewUrlParser: true, useUni
 					valorTemperatura: temperatura,
 					valorLuminosidad: luminosidad,
 					error: data['error'],
-					ciudad: ciudadActual
+					ciudad: ciudadActual,
+					pronostico: pronosticoActual,
+					hora: data['hora'],
+					amanecer: data['amanecer'],
+					atardecer: data['atardecer'],
 				});
 
 				io.sockets.emit('tiempoNav', {
@@ -153,6 +181,7 @@ MongoClient.connect("mongodb://localhost:27017/", {useNewUrlParser: true, useUni
 
 			/**** Usando los sensores ****/
 			client.on('enviaInfoSensores', function (data) {
+				restaurarValores();
 				luminosidad = data['luminosidad'];
 				temperatura = data['temperatura'];
 				console.log("Se ha recibido un nuevo valor de luminosidad: " + data['luminosidad'] + ' y de temperatura: ' + data['temperatura']);
@@ -160,15 +189,15 @@ MongoClient.connect("mongodb://localhost:27017/", {useNewUrlParser: true, useUni
 			});
 
 			client.on('cambioLuminosidad', function (data) {
+				restaurarValores();
 				luminosidad = data;
-				ciudadActual = "No Definida";
 				console.log("Se ha recibido un nuevo valor de luminosidad: " + data);
 				actualizarDatos();
 			});
 			
 			client.on('cambioTemperatura', function (data) {
+				restaurarValores();
 				temperatura = data;
-				ciudadActual = "No Definida";
 				console.log("Se ha recibido un nuevo valor de temperatura: " + data);
 				actualizarDatos();
 			});
@@ -192,32 +221,39 @@ MongoClient.connect("mongodb://localhost:27017/", {useNewUrlParser: true, useUni
 						var tiempo = JSON.parse(data);
 						// El código 200 es un código de la api que marca que todo ha ido bien
 						if(tiempo.cod == '200'){
-							temperatura = tiempo.main.temp;
-							ciudadActual = tiempo.name;
-							
 							tiempoCiudad = {
 								temperatura: tiempo.main.temp, 
 								ciudad: tiempo.name, 
-								humedad: tiempo.main.humidity,
 								pronostico: tiempo.weather[0].main,
 								amanecer: tiempo.sys.sunrise,
 								atardecer: tiempo.sys.sunset,
+								zona_horaria: tiempo.timezone/3600,
+								hora_actual: Math.round((new Date()).getTime() / 1000),
 							};
 
+							temperatura = tiempo.main.temp;
+							ciudadActual = tiempo.name;
+							pronosticoActual = tiempo.weather[0].main;
+							hora_actual = Math.round((new Date()).getTime() / 1000);
+							amanecer = tiempo.sys.sunrise;
+							atardecer = tiempo.sys.sunset;
+							zona_horaria = tiempo.timezone/3600;
+							errorCiudad = "";
 							actualizarDatos();
 							console.log('Datos relevantes:', tiempoCiudad);
-
-							io.sockets.emit('tiempoCiudad', tiempoCiudad);
 						}
 						else{
+							restaurarValores();
+							errorCiudad = "<strong>Error!</strong> La ciudad introducida no puede ser localizada.";
 							console.log("Ciudad no encontrada");
+							client.emit('ciudadNoEncontrada', errorCiudad);
 						}
 					}
 				});
 			});
 
 			client.on('peticionBD', function(data){
-				collection.find().sort({_id:+1}).toArray(function(err, results){
+				collection.find().sort({_id:-1}).toArray(function(err, results){
 					client.emit('cargarBD', results);
 				});
 			});

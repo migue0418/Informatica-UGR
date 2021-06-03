@@ -10,10 +10,9 @@
 		<script type="text/javascript">
 			var socket = io.connect('localhost:8080');
 
-			var temperaturaMaxima = 35;
-
-			var luminosidadMaxima = 70;
-			var luminosidadMinima = 0;
+			var temperaturaMaxima = 30;
+			var luminosidadMinima = 25;
+			var luminosidadMaxima = 75;
 
 			socket.on('agenteComprueba', function(data) {
 				console.log("Hola, soy el agente");
@@ -26,24 +25,243 @@
 				var persianas = data['estadoPersianas'];
 				var temperatura = data['valorTemperatura'];
 				var luminosidad = data['valorLuminosidad'];
-				var mensajeError = "";
-				var tiempo = "";
+				var pronostico = data['pronostico'];
+				var mensajeAgente = tiempo = "";
+				var horaActual = amanecer = atardecer = "";
 
-				// Si el aire acondicionado está encendido
-				if(ac == 'ON' && persianas == 'Abierto'){
-					mensajeError = "<strong>Agente: </strong>No puedes tener el AC encendido y las Persianas abiertas!<br><ul>";
-					// Si la temperatura es alta, cerramos persianas
-					if(temperatura > temperaturaMaxima){
-						mensajeError += "<li>Cierro las persianas porque hace calor.</li>";
-						persianas = 'Cerrado';
+				/** Las funciones que va a usar el agente **/
+				// Escribimos las horas recibidas en un formato adecuado hh:mm:ss y con su zona horaria
+				function darFormatoHora(hora_unix, zona) {
+					// Creamos un objeto Date con la hora unix que pasamos como argumento
+					var date = new Date(hora_unix * 1000);
+					console.log("La fecha es :" + date);
+					zona -= 2;		// getHours() usa la hora local, y en españa tenemos +2
+					// Obtenemos las horas, minutos y segundos
+					var hours = date.getHours() + zona;	// Le sumamos la zona horaria para adaptarla
+					if(hours < 0){
+						hours += 24;
+					} 
+					else if(hours >= 24){
+						hours -= 24;
 					}
-					// Si la temperatura es normal 
-					else {
-						mensajeError += "<li>Apago el AC porque no hace calor.</li>";
-						ac = 'OFF';
+					if(hours >= 0 && hours < 10){
+						hours = "0" + hours;
 					}
-					mensajeError += "</ul>";
+
+					// Minutos
+					var minutes = date.getMinutes();
+					if(minutes >= 0 && minutes < 10){
+						minutes = "0" + minutes;
+					}
+					
+					// Segundos
+					var seconds = date.getSeconds();
+					if(seconds >= 0 && seconds < 10){
+						seconds = "0" + seconds;
+					}
+
+					// Le damos formato de hh:mm:ss
+					var formattedTime = hours + ':' + minutes + ':' + seconds;
+					
+					return formattedTime;
 				}
+
+				// Calculamos la luminosidad a partir del pronóstico y del estado de la persiana
+				function calculaLuminosidad() {
+					// Si el agente está comprobando los datos de la API
+					if(data['pronostico'] != "No definido"){
+						// Partimos de la luminosidad al 100%
+						luminosidad = 100;
+						var factorPronostico = 1, factorHora = 1;
+						// Multiplicamos un factor según el pronostico
+						// Clear = x1, Clouds = x0.75, Rain = x0.60, Snow = x0.50, Storm = x0.55, Extreme = x0.40, Haze = x0.30
+						if(data['pronostico'] == "Clouds"){
+							factorPronostico = 0.75;
+						}
+						else if(data['pronostico'] == "Rain"){
+							factorPronostico = 0.60;
+						}
+						else if(data['pronostico'] == "Snow"){
+							factorPronostico = 0.50;
+						}
+						else if(data['pronostico'] == "Storm"){
+							factorPronostico = 0.55;
+						}
+						else if(data['pronostico'] == "Extreme"){
+							factorPronostico = 0.40;
+						}
+						else if(data['pronostico'] == "Haze"){
+							factorPronostico = 0.30;
+						}
+						
+						console.log("Este es el factorPronostico: " + factorPronostico);
+
+						// Aplicamos el factor relativo al pronóstico
+						luminosidad *= factorPronostico;
+
+						console.log("Ha calculado el pronostico");
+						// Multiplicamos otro factor según la hora
+						console.log("Medio dia: " + medioDia);
+						porcentajeDia = (data['atardecer'] - medioDia) / 100;
+						console.log("Porcentaje dia: " + porcentajeDia);
+						porcentajeActual = (data['atardecer'] - data['hora']) / porcentajeDia;
+						console.log("Porcentaje actual: " + porcentajeActual);
+						factorHora = (0.3 + (porcentajeActual * 0.8) ) / 100;
+						console.log("Factor: " + factorHora);
+						
+						// Atardecer y Amanecer = x0.3, Medio día = x1.0, Noche = x0.1, Noche-Amanecer/Noche-Atardecer = x0.1-x0.3, Amanecer-MedioDía = x0.3-x1.0
+						var medioDia = (data['amanecer'] + data['atardecer']) / 2, porcentajeDia, porcentajeActual, segmento, segmentoConsumido, porcentaje, porcentajeBase, porcentajeMax;
+						// Si es de noche --> x0.1
+						if(data['hora'] <= (data['amanecer'] - 1800) || data['hora'] >= (data['atardecer'] + 1800)){
+							factorHora = 0.1;
+						}
+						// Entre la noche y el amanecer --> x0.1 - x0.3
+						else if(data['hora'] > (data['amanecer'] - 1800) && data['hora'] < data['amanecer']){
+							porcentajeBase = 0.1;	// El mínimo que puede obtener, se parte de ahí
+							porcentajeMax = 0.3;	// El máximo que puede alcanzar
+							segmento = data['amanecer'] - (data['amanecer'] - 1800);
+							segmentoConsumido = data['hora'] - (data['amanecer'] - 1800);	// La parte del segmento que se ha consumido, donde se encuentra ahora
+							porcentaje = segmentoConsumido / segmento;		// El porcentaje consumido del segmento
+							// Porcentaje Máx - Porcentaje Base es el segmento en sí, si le multiplicamos Porcentaje, obtenemos el porcentaje consumido
+							factorHora = porcentajeBase + ((porcentajeMax - porcentajeBase) * porcentaje);	// Al sumar el base, obtenemos el factorHora
+						}
+						// Entre el amanecer y el medio día --> x0.3 - x1.0
+						else if(data['hora'] >= data['amanecer'] && data['hora'] < medioDia){
+							porcentajeBase = 0.3;	// El mínimo que puede obtener, se parte de ahí
+							porcentajeMax = 1.0;	// El máximo que puede alcanzar
+							segmento = medioDia - data['amanecer'];
+							segmentoConsumido = data['hora'] - data['amanecer'];		// La parte del segmento que se ha consumido, donde se encuentra ahora
+							porcentaje = segmentoConsumido / segmento;		// El porcentaje consumido del segmento
+							// Porcentaje Máx - Porcentaje Base es el segmento en sí, si le multiplicamos Porcentaje, obtenemos el porcentaje consumido
+							factorHora = porcentajeBase + ((porcentajeMax - porcentajeBase) * porcentaje);	// Al sumar el base, obtenemos el factorHora
+						}
+						// Entre el medio día y el atardecer --> x1.0 - x0.3
+						else if(data['hora'] > medioDia && data['hora'] <= data['atardecer']){
+							porcentajeBase = 1;	
+							porcentajeMax = 0.3;	
+							segmento = data['atardecer'] - medioDia;
+							segmentoConsumido = data['hora'] - medioDia;		
+							porcentaje = segmentoConsumido / segmento;		
+							factorHora = porcentajeBase + ((porcentajeMax - porcentajeBase) * porcentaje);
+						}
+						// Entre el atardecer y la noche --> x0.3 - x0.1
+						else if(data['hora'] > data['atardecer'] && data['hora'] < (data['atardecer'] + 1800)){
+							porcentajeBase = 0.3;	
+							porcentajeMax = 0.1;	
+							segmento = (data['atardecer'] + 1800) - data['atardecer'];
+							segmentoConsumido = data['hora'] - data['atardecer'];		
+							porcentaje = segmentoConsumido / segmento;		
+							factorHora = porcentajeBase + ((porcentajeMax - porcentajeBase) * porcentaje);
+						}
+
+						console.log("Este es el factorHora: " + factorHora);
+						// Aplicamos el factor relativo a la hora
+						luminosidad *= factorHora;
+					}
+					else{
+						// Por defecto si no se ha conectado a la API
+						luminosidad = 50.00;
+					}
+
+					// Si cerramos la persiana, la luminosidad baja a un 10%
+					if(persianas != 'Abierto'){
+						luminosidad *= 0.25;
+					}
+
+					// Luminosidad con dos decimales
+					luminosidad = luminosidad.toFixed(2);
+				}
+
+				// Controla los aparatos, encendiéndolos o apagándolos según sea necesario
+				function controlaSistema(){
+					// Si la temperatura es menor que 22ºC, no hay necesidad de que el aire se quede encendido
+					if(temperatura < temperaturaMaxima){
+						if(ac == 'ON'){
+							ac = 'OFF';
+							mensajeAgente += "<li>La temperatura de la habitación no es elevada (" + temperatura + "ºC), apago el AC para ahorrar.</li>";
+						}
+						// Comprobamos que la luminosidad sea correcta
+						if(luminosidad <= luminosidadMinima){
+							if(persianas == 'Cerrado'){
+								// Si al abrir la persiana, la luminosidad se arregla, las abrimos
+								persianas = 'Abierto';
+								calculaLuminosidad('Abierto');
+								if(luminosidad > luminosidadMinima){
+									mensajeAgente += "<li>La luminosidad está por debajo del mínimo, abro la persiana para que entre luz.</li>";
+								}
+								else{
+									persianas = 'Cerrado';
+								}
+							}
+						}
+						// else if(luminosidad > luminosidadMinima && luz == 'ON')
+					}
+					else if(temperatura >= temperaturaMaxima){	// Modo FRÍO (en principio el AC sólo funciona para enfriar la habitación)
+						// Encendemos el aire y regulamos a 23ºC
+						if(ac == 'OFF'){
+							ac = 'ON';
+							mensajeAgente += "<li>La temperatura de la habitación es demasiado elevada (" + temperatura + "ºC), enciendo el AC.</li>";
+							temperatura = 23;		// Temperatura de la habitación se estabiliza
+						}
+						else{							
+							mensajeAgente += "<li>La temperatura de la habitación es demasiado elevada (" + temperatura + "ºC), aunque el AC está encendido, aumento la potencia para estabilizar la temperatura.</li>";
+							temperatura = 23;		// Temperatura de la habitación se estabiliza
+						}
+
+						// No puede estar el ac y las persianas abiertas al mismo tiempo
+						if(persianas == 'Abierto'){
+							mensajeAgente += "<li>Cierro las persianas porque hace calor y el AC es más necesario.</li>";
+							persianas = 'Cerrado';
+						}
+					}
+
+					// Si el aire acondicionado está encendido y las persianas también
+					if(ac == 'ON' && persianas == 'Abierto'){
+						// Si la temperatura es alta, cerramos persianas
+						if(temperatura > temperaturaMaxima){
+							mensajeAgente += "<li><strong>Cuidado! </strong>No puedes tener el AC encendido y las Persianas abiertas!. Cierro las persianas porque hace calor.</li>";
+							persianas = 'Cerrado';
+							calculaLuminosidad();
+						}
+						// Si la temperatura es normal 
+						else {
+							mensajeAgente += "<li><strong>Cuidado! </strong>No puedes tener el AC encendido y las Persianas abiertas!. Apago el AC porque no hace calor.</li>";
+							ac = 'OFF';
+						}
+					}
+
+					// Si el AC está apagado y al abrir la ventana puede iluminarse la habitación más
+					if(ac == 'OFF' && luminosidad <= luminosidadMinima && persianas == 'Cerrado'){
+						// Si al abrir la persiana, la luminosidad se arregla, las abrimos
+						persianas = 'Abierto';
+						calculaLuminosidad('Abierto');
+						if(luminosidad > luminosidadMinima){
+							mensajeAgente += "<li>La luminosidad está por debajo del mínimo, abro la persiana para que entre luz.</li>";
+						}
+						else{
+							persianas = 'Cerrado';
+						}
+					}
+
+					// Si hay mensajes del agente, los pone todos como una lista
+					if(mensajeAgente != ""){
+						mensajeAgente = "<ul><strong>Agente: </strong>" + mensajeAgente;
+							mensajeAgente += "</ul>";
+					}
+				}
+
+				/** Agente Actúa **/
+				// Si la hora no está vacía, tenemos los datos de una ciudad
+				if(data['hora'] != ""){	
+					horaActual = darFormatoHora(data['hora'], data['zona']);
+					amanecer = darFormatoHora(data['amanecer'], data['zona']);
+					atardecer = darFormatoHora(data['atardecer'], data['zona']);
+				}
+
+				// La luminosidad se calcula a partir de la hora y el pronóstico si está conectada a la API
+				// 	- También tiene en cuenta si las persianas están abiertas o no
+				calculaLuminosidad();
+				controlaSistema();
 
 				if(temperatura < 0){
 					tiempo = "rainy";
@@ -62,11 +280,14 @@
 					estadoPersianas: persianas,
 					valorTemperatura: temperatura,
 					valorLuminosidad: luminosidad,
-					error: mensajeError,
+					error: mensajeAgente,
 					tiempoNav: tiempo,
+					hora: horaActual,
+					amanecer: amanecer,
+					atardecer: atardecer,
 				});
 
-				document.getElementById('mensaje').innerHTML = mensajeError;
+				document.getElementById('mensaje').innerHTML = mensajeAgente;
 			});
 
 			socket.on('tiempoNav', function(data) {
