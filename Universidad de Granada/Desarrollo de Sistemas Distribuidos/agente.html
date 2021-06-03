@@ -78,6 +78,9 @@
 						if(data['pronostico'] == "Clouds"){
 							factorPronostico = 0.75;
 						}
+						else if(data['pronostico'] == "Mist"){
+							factorPronostico = 0.65;
+						}
 						else if(data['pronostico'] == "Rain"){
 							factorPronostico = 0.60;
 						}
@@ -92,6 +95,9 @@
 						}
 						else if(data['pronostico'] == "Haze"){
 							factorPronostico = 0.30;
+						}
+						else{
+							factorPronostico = 0.5;
 						}
 						
 						console.log("Este es el factorPronostico: " + factorPronostico);
@@ -234,12 +240,13 @@
 					if(ac == 'OFF' && luminosidad <= luminosidadMinima && persianas == 'Cerrado'){
 						// Si al abrir la persiana, la luminosidad se arregla, las abrimos
 						persianas = 'Abierto';
-						calculaLuminosidad('Abierto');
+						calculaLuminosidad();
 						if(luminosidad > luminosidadMinima){
 							mensajeAgente += "<li>La luminosidad está por debajo del mínimo, abro la persiana para que entre luz.</li>";
 						}
-						else{
+						else{	// No se arregla así que volvemos a calcularla con las persianas cerradas
 							persianas = 'Cerrado';
+							calculaLuminosidad();
 						}
 					}
 
@@ -248,6 +255,15 @@
 						mensajeAgente = "<ul><strong>Agente: </strong>" + mensajeAgente;
 							mensajeAgente += "</ul>";
 					}
+
+					/*
+					// Si encendemos las luces, la luminosidad tiene que estar por encima del 75%
+					if(luces == 'ON'){
+						if(luminosidad < 0.75){
+							luminosidad = 0.75;
+						}
+					}
+					*/
 				}
 
 				/** Agente Actúa **/
@@ -266,7 +282,7 @@
 				if(temperatura < 0){
 					tiempo = "rainy";
 				}
-				else if(temperatura >= 0 && temperatura < 30){
+				else if(temperatura >= 0 && temperatura < 20){
 					tiempo = "cloudy";
 				}
 				else{

@@ -16,6 +16,8 @@ var httpServer = http.createServer(
 			uri = "usuario.html";
 		else if (uri=="/agente")
 			uri = "agente.html";
+		else if (uri=="/sensor" || uri=="/sensores")
+			uri = "sensores.html";
 
 		var fname = path.join(process.cwd(), uri);
 		fs.exists(fname, function(exists) {

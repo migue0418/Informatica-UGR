@@ -1,11 +1,17 @@
+html {
+  font-size: 16px;
+}
+
 body {
   margin: 0;
   font-family: "Montserrat", sans-serif;
+  font-size: 1rem;
 }
 
 body h1 {
   margin: 1.5rem auto;
   text-align: center;
+  font-weight: bold;
   font-size: 2.5rem;
   color: #1d2939;
   text-shadow: 0.03em 0.07em 0 rgba(0, 0, 0, 0.3);
@@ -31,7 +37,7 @@ body nav#barra-nav.rainy {
 
 body nav#barra-nav a.nav-menu {
   text-decoration: none;
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   font-weight: bold;
   color: #1d2939;
   padding: 1rem 0;
