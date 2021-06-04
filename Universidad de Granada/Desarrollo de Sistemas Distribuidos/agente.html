@@ -164,19 +164,15 @@
 						console.log("Este es el factorHora: " + factorHora);
 						// Aplicamos el factor relativo a la hora
 						luminosidad *= factorHora;
-					}
-					else{
-						// Por defecto si no se ha conectado a la API
-						luminosidad = 50.00;
+						
+						// Luminosidad con dos decimales
+						luminosidad = luminosidad.toFixed(2);
 					}
 
 					// Si cerramos la persiana, la luminosidad baja a un 10%
 					if(persianas != 'Abierto'){
 						luminosidad *= 0.25;
 					}
-
-					// Luminosidad con dos decimales
-					luminosidad = luminosidad.toFixed(2);
 				}
 
 				// Controla los aparatos, encendiéndolos o apagándolos según sea necesario
