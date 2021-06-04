@@ -47,13 +47,21 @@ body section {
   margin: 0 4rem;
 }
 
-body section#controladores {
-  display: block;
+body section#api-weather #api-data {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
 }
 
-body section#controladores button {
+body section#medidas-actuadores {
+  display: flex;
+  justify-content: space-around;
+  align-content: center;
+  margin-top: 1rem;
+}
+
+body section#medidas-actuadores .columna {
   display: block;
-  margin: 1rem 0;
 }
 
 body section#sensores form label, body section#sensores form input {
@@ -66,7 +74,8 @@ body section#agente strong {
 }
 
 body section#dibujo-casa {
-  position: absolut;
+  display: flex;
+  justify-content: center;
 }
 
 body section#dibujo-casa .pared-frontal {
@@ -136,8 +145,8 @@ body section#database table {
 
 body section#database table td, body section#database table th {
   border: 1px solid #dddddd;
-  text-align: left;
   padding: 8px;
+  text-align: center;
 }
 
 body section#database table tr:nth-child(even) {

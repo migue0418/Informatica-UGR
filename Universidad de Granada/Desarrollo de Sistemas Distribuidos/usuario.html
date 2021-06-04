@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
     <head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta charset="UTF-8">
 		<link rel="icon" type="image/png" href="iot-icon.png">
 		<title>Usuario</title>
@@ -192,25 +193,27 @@
 
 				<input type="submit" value="Buscar">
 			</form>
-			<div id="ciudad-api">
-				<i class="fas fa-map-marked-alt"></i>
-				<strong>Ciudad: </strong>
-				<p id="ciudad"></p>
-			</div>
-			<div id="hora-actual-api">
-				<i class="far fa-clock"></i>
-				<strong>Hora Actual: </strong>
-				<p id="hora-actual"></p>
-			</div>
-			<div id="amanecer-api">
-				<i class="far fa-clock"></i>
-				<strong>Amanecer: </strong>
-				<p id="amanecer"></p>
-			</div>
-			<div id="atardecer-api">
-				<i class="far fa-clock"></i>
-				<strong>Atardecer: </strong>
-				<p id="atardecer"></p>
+			<div id="api-data">
+				<div id="ciudad-api">
+					<i class="fas fa-map-marked-alt"></i>
+					<strong>Ciudad: </strong>
+					<p id="ciudad"></p>
+				</div>
+				<div id="hora-actual-api">
+					<i class="far fa-clock"></i>
+					<strong>Hora Actual: </strong>
+					<p id="hora-actual"></p>
+				</div>
+				<div id="amanecer-api">
+					<i class="far fa-clock"></i>
+					<strong>Amanecer: </strong>
+					<p id="amanecer"></p>
+				</div>
+				<div id="atardecer-api">
+					<i class="far fa-clock"></i>
+					<strong>Atardecer: </strong>
+					<p id="atardecer"></p>
+				</div>
 			</div>
 			<div id="error-api">
 				<p id="error-ciudad"></p>
@@ -229,35 +232,33 @@
 			</table>
 		</section>
 
-		<section id="medidas">
-			<div id="luminosidad">
-				<i class="far fa-lightbulb"></i>
-				<strong>Luminosidad: </strong>
-				<p id="valor-luminosidad"></p>
+		<section id="medidas-actuadores">
+			<div class="columna">
+				<div id="luminosidad">
+					<i class="far fa-lightbulb"></i>
+					<strong>Luminosidad: </strong>
+					<p id="valor-luminosidad"></p>
+				</div>
+				<div id="persianas">
+					<i class="fas fa-tint"></i>
+					<strong>Persianas: </strong>
+					<p id="estado-persianas"></p>
+				</div>
+				<button id="persianas-controlador" onclick="cambiarEstadoPersianas()"></button>
 			</div>
-			<div id="temperatura">
-				<i class="fas fa-thermometer-half"></i>
-				<strong>Temperatura: </strong>
-				<p id="valor-temperatura"></p>
+			<div class="columna">
+				<div id="temperatura">
+					<i class="fas fa-thermometer-half"></i>
+					<strong>Temperatura: </strong>
+					<p id="valor-temperatura"></p>
+				</div>
+				<div id="aire-acondicionado">
+					<i class="fas fa-wind"></i>
+					<strong>Aire Acondicionado: </strong>
+					<p id="estado-ac"></p>
+				</div>
+				<button id="ac-controlador" onclick="cambiarEstadoAC()"></button>
 			</div>
-		</section>
-
-		<section id="actuadores">
-			<div id="persianas">
-				<i class="fas fa-tint"></i>
-				<strong>Persianas: </strong>
-				<p id="estado-persianas"></p>
-			</div>
-			<div id="aire-acondicionado">
-				<i class="fas fa-wind"></i>
-				<strong>Aire Acondicionado: </strong>
-				<p id="estado-ac"></p>
-			</div>
-		</section>
-
-		<section id="controladores">
-			<button id="persianas-controlador" onclick="cambiarEstadoPersianas()"></button>
-			<button id="ac-controlador" onclick="cambiarEstadoAC()"></button>
 		</section>
 
 		<section id="agente">
@@ -278,6 +279,7 @@
 				</div>
 			</div>
 		</section>
+
 
 		<section id="historico-db">
 			<button id="boton-bd" onclick="cargarBD()">Cargar BD (Histórico)</button>
