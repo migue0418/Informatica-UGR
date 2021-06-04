@@ -12,7 +12,7 @@
 			var socket = io.connect('localhost:8080');
 
 			var temperaturaMaxima = 30;
-			var luminosidadMinima = 25;
+			var luminosidadMinima = 15;
 			var luminosidadMaxima = 75;
 
 			socket.on('agenteComprueba', function(data) {
@@ -36,6 +36,7 @@
 					// Creamos un objeto Date con la hora unix que pasamos como argumento
 					var date = new Date(hora_unix * 1000);
 					console.log("La fecha es :" + date);
+					console.log("La zona es: " + zona);
 					zona -= 2;		// getHours() usa la hora local, y en españa tenemos +2
 					// Obtenemos las horas, minutos y segundos
 					var hours = date.getHours() + zona;	// Le sumamos la zona horaria para adaptarla
@@ -76,7 +77,10 @@
 						var factorPronostico = 1, factorHora = 1;
 						// Multiplicamos un factor según el pronostico
 						// Clear = x1, Clouds = x0.75, Rain = x0.60, Snow = x0.50, Storm = x0.55, Extreme = x0.40, Haze = x0.30
-						if(data['pronostico'] == "Clouds"){
+						if(data['pronostico'] == "Clear"){
+							factorPronostico = 1;
+						}
+						else if(data['pronostico'] == "Clouds"){
 							factorPronostico = 0.75;
 						}
 						else if(data['pronostico'] == "Mist"){
@@ -173,6 +177,12 @@
 					if(persianas != 'Abierto'){
 						luminosidad *= 0.25;
 					}
+					else{
+						// Si las persianas se abren después de estar cerradas vuelve a la luminosidad anterior
+						if(luminosidad < 25 && data['pronostico'] == "No definido"){
+							luminosidad /= 0.25;
+						}
+					}
 				}
 
 				// Controla los aparatos, encendiéndolos o apagándolos según sea necesario
@@ -194,6 +204,7 @@
 								}
 								else{
 									persianas = 'Cerrado';
+									calculaLuminosidad();
 								}
 							}
 						}
@@ -215,6 +226,7 @@
 						if(persianas == 'Abierto'){
 							mensajeAgente += "<li>Cierro las persianas porque hace calor y el AC es más necesario.</li>";
 							persianas = 'Cerrado';
+							calculaLuminosidad();
 						}
 					}
 

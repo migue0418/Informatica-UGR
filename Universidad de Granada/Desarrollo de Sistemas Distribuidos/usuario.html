@@ -28,6 +28,9 @@
 				console.log("Va a actualizar datos");
 				document.getElementById('valor-temperatura').innerHTML = data['valorTemperatura'];
 				document.getElementById('valor-luminosidad').innerHTML = data['valorLuminosidad'];
+				var porcentajeLuminosidad = (105 - data['valorLuminosidad']) / 100;
+				document.getElementById('pared').style.background = "rgba(0, 100, 145, " + porcentajeLuminosidad + ")";
+
 				actualizarAC(data['estadoAC']);
 				actualizarPersianas(data['estadoPersianas']);
 				console.log(data);
@@ -268,7 +271,7 @@
 		</section>
 		
 		<section id="dibujo-casa">
-			<div class="pared-frontal">
+			<div id="pared" class="pared-frontal" style="background-color: rgba(0, 100, 145);">
 				<div class="ventana">
 					<img src="images/ventana.png">
 				</div>
